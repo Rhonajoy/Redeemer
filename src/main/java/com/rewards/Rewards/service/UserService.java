@@ -38,6 +38,7 @@ public class UserService {
         PointsAccount pointsAccount = new PointsAccount();
         pointsAccount.setUser(user);
         pointsAccount.setPointsBalance(0);
+        pointsAccount.getCreatedAt();
 
         user.setWallet(wallet);
         user.setPointsAccount(pointsAccount);

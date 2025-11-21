@@ -22,25 +22,58 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionDto createTransaction(TransactionRequestDto dto) {
-        User user = userRepository.findById(dto.getUserId())
+    public TransactionDto createTransaction(TransactionRequestDto request) {
+        String reference = request.getTransactionReference();
+
+        // 1️⃣ Idempotency check
+        if (reference != null && transactionRepository.existsByTransactionReference(reference)) {
+            Transaction existing = transactionRepository.findByTransactionReference(reference);
+            return mapToDto(existing);
+        }
+
+        // 2️⃣ Fetch user
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        int pointsEarned = (int) (dto.getAmount() / 100);
-        Wallet wallet = user.getWallet();
-        wallet.setWalletBalance(wallet.getWalletBalance() + pointsEarned);
-        PointsAccount pointsAccount = user.getPointsAccount();
-        pointsAccount.setPointsBalance(pointsAccount.getPointsBalance() + pointsEarned);
+        // 3️⃣ Create transaction
         Transaction transaction = new Transaction();
+        transaction.setAmount(request.getAmount());
         transaction.setUser(user);
-        transaction.setAmount(dto.getAmount());
-        transaction.setPointsEarned(pointsEarned);
-        transaction.setPointsRedeemed(0);
-        transaction.setTransactionReference(dto.getReferenceId());
-        transaction.setType(TransactionType.CREDIT); // transaction type
-        transactionRepository.save(transaction);
-        return DtoConverter.toTransactionDto(transaction);
+
+        // ✅ Safe enum conversion
+        try {
+            TransactionType type = request.getType();
+            if (type == null) {
+                throw new RuntimeException("Transaction type is required");
+            }
+            transaction.setType(type);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid transaction type: " + request.getType());
+        }
+
+        // Use client-supplied reference if provided
+        if (reference != null) {
+            transaction.setTransactionReference(reference);
+        }
+        // else @PrePersist generates a UUID
+
+        Transaction saved = transactionRepository.save(transaction);
+
+        return mapToDto(saved);
     }
+
+    private TransactionDto mapToDto(Transaction transaction) {
+        TransactionDto dto = new TransactionDto();
+        dto.setId(transaction.getId());
+        dto.setTransactionReference(transaction.getTransactionReference());
+        dto.setAmount(transaction.getAmount());
+        dto.setPointsEarned(transaction.getPointsEarned());
+        dto.setPointsRedeemed(transaction.getPointsRedeemed());
+        dto.setTransactionType(transaction.getType());
+        dto.setTimestamp(transaction.getCreatedAt());
+        return dto;
+    }
+
 
 
     @Transactional
@@ -62,7 +95,7 @@ public class TransactionService {
         transaction.setAmount(0L);
         transaction.setPointsEarned(0);
         transaction.setPointsRedeemed(dto.getPointsToRedeem());
-        transaction.setTransactionReference(dto.getTransactionReference());
+//        transaction.setTransactionReference(dto.getTransactionReference());
         transaction.setType(TransactionType.REDEEM);
         transactionRepository.save(transaction);
         return DtoConverter.toTransactionDto(transaction);

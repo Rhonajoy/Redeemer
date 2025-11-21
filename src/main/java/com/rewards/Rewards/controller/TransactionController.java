@@ -5,13 +5,10 @@ import com.rewards.Rewards.dto.TransactionDto;
 import com.rewards.Rewards.dto.TransactionRequestDto;
 import com.rewards.Rewards.service.TransactionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/transactions")
+@RequestMapping("/v1/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
 
@@ -20,12 +17,21 @@ public class TransactionController {
     }
 
     @PostMapping("/credit")
-    public ResponseEntity<TransactionDto> creditAccount(@RequestBody TransactionRequestDto dto) {
-        return ResponseEntity.ok(transactionService.createTransaction(dto));
+    public ResponseEntity<TransactionDto> creditAccount(
+            @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
+            @RequestBody TransactionRequestDto request) {
+
+        // Optional header sets transactionReference
+        if (idempotencyKey != null && !idempotencyKey.isBlank()) {
+            request.setTransactionReference(idempotencyKey);
+        }
+
+        TransactionDto transaction = transactionService.createTransaction(request);
+        return ResponseEntity.ok(transaction);
     }
 
     @PostMapping("/redeem")
-    public ResponseEntity<TransactionDto> redeemPoints(@RequestBody RedeemPointsRequestDto dto) {
-        return ResponseEntity.ok(transactionService.redeemPoints(dto));
+    public ResponseEntity<TransactionDto> redeemPoints(@RequestBody RedeemPointsRequestDto redeemPointsRequestDto) {
+        return ResponseEntity.ok(transactionService.redeemPoints(redeemPointsRequestDto));
     }
 }

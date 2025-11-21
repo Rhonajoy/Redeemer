@@ -99,7 +99,7 @@ public class PointsService {
         int pointsChange = isEarning ? pointsEarned : -pointsToRedeem;
         kafkaTemplate.send("points-events", new PointsEvent(userId, pointsChange, referenceId));
 
-        return DtoConverter.toTransactionDto();
+        return DtoConverter.toTransactionDto(transaction);
     }
 
     private int calculatePoints(Long amount) {

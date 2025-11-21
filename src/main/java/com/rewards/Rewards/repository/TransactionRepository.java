@@ -10,4 +10,7 @@ import java.util.UUID;
 
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
+    boolean existsByTransactionReference(String transactionReference);
+
+    Transaction findByTransactionReference(String transactionReference);
 }

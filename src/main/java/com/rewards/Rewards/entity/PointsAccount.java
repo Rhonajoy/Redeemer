@@ -16,7 +16,6 @@ public class PointsAccount {
     @Id
     @GeneratedValue
     private Long id;
-    @Column(nullable=false)
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -24,8 +23,12 @@ public class PointsAccount {
     private TransactionType type;
     private int amountPoints;
     @Column(nullable = false)
-    private String relatedTxId;
+
     private LocalDateTime createdAt;
 
     private int pointsBalance;
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

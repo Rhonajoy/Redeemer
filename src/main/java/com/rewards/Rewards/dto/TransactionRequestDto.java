@@ -1,5 +1,6 @@
 package com.rewards.Rewards.dto;
 
+import com.rewards.Rewards.entity.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionRequestDto {
-    private Long userId;
     private Long amount;
-    private String referenceId;
+    private String transactionReference;
+    private TransactionType type;
+    private Long userId;
 }
