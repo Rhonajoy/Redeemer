@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class WalletDto {
     private Long Id;
     private Long walletBalance;
+    private Long totalCredits;
+    private Long totalRedeemedMoney;
 }

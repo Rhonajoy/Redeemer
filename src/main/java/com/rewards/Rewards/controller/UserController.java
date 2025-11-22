@@ -1,5 +1,6 @@
 package com.rewards.Rewards.controller;
 
+import com.rewards.Rewards.config.ApiConfig;
 import com.rewards.Rewards.dto.CreateUserRequest;
 import com.rewards.Rewards.dto.PointsAccountDto;
 import com.rewards.Rewards.dto.UserDto;
@@ -10,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping(UserController.PATH)
 public class UserController {
     private final UserService userService;
-
+    public static final String PATH = ApiConfig.BASE_API_PATH + "users";
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -24,20 +25,20 @@ public class UserController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    @GetMapping("/retrieve/{id}")
+    public ResponseEntity<UserDto> getUser(@PathVariable ("id")Long id) {
         UserDto dto = userService.getUser(id);
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/{id}/wallet")
-    public ResponseEntity<WalletDto> getWalletBalance(@PathVariable Long id) {
+    @GetMapping("/wallet/{id}")
+    public ResponseEntity<WalletDto> getWalletBalance(@PathVariable ("id") Long id) {
         WalletDto dto = userService.getWalletBalance(id);
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/{id}/points")
-    public ResponseEntity<PointsAccountDto> getPointsBalance(@PathVariable Long id) {
+    @GetMapping("/points/{id}")
+    public ResponseEntity<PointsAccountDto> getPointsBalance(@PathVariable ("id")Long id) {
         PointsAccountDto dto = userService.getPointsBalance(id);
         return ResponseEntity.ok(dto);
     }

@@ -16,6 +16,8 @@ public class Wallet {
     private Long id;
     @Column(nullable = false)
     private Long walletBalance=0L;
+    @Column(nullable = false)
+    private Long totalRedeemedMoney=0L;
     @OneToOne
     @JoinColumn(name="user_id", nullable=false, unique=true)
     private User user;

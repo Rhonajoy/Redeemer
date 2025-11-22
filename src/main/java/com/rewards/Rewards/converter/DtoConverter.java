@@ -47,7 +47,20 @@ public class DtoConverter {
         dto.setPointsRedeemed(transaction.getPointsRedeemed());
         dto.setTransactionType(transaction.getType());
         dto.setTimestamp(transaction.getCreatedAt());
+        return dto;
+    }
 
+    public static WalletDto toWalletDto(Wallet wallet, PointsAccount pointsAccount) {
+        if (wallet == null) return null;
+        WalletDto dto = new WalletDto();
+        dto.setId(wallet.getId());
+        dto.setWalletBalance(wallet.getWalletBalance());
+        Long totalCredits = 0L;
+        if (pointsAccount != null) {
+            totalCredits = (long) pointsAccount.getPointsBalance();
+        }
+        dto.setTotalCredits(totalCredits);
+        dto.setTotalRedeemedMoney(0L);
         return dto;
     }
 }

@@ -7,6 +7,7 @@ import com.rewards.Rewards.dto.WalletDto;
 import com.rewards.Rewards.entity.PointsAccount;
 import com.rewards.Rewards.entity.User;
 import com.rewards.Rewards.entity.Wallet;
+import com.rewards.Rewards.exceptions.ResourceNotFoundException;
 import com.rewards.Rewards.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,6 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-    // Create user + wallet + points account automatically
     @Transactional
     public UserDto createUser(String email, String name) {
         User user = new User();
@@ -29,12 +28,10 @@ public class UserService {
         user.setName(name);
         user.setCreatedAt(LocalDateTime.now());
 
-        // Wallet
         Wallet wallet = new Wallet();
         wallet.setUser(user);
         wallet.setWalletBalance(0L);
 
-        // Points account
         PointsAccount pointsAccount = new PointsAccount();
         pointsAccount.setUser(user);
         pointsAccount.setPointsBalance(0);
@@ -47,24 +44,22 @@ public class UserService {
         return DtoConverter.toUserDto(savedUser);
     }
 
-    // Get user with wallet info
     public UserDto getUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return DtoConverter.toUserDto(user);
     }
 
-    // Get only wallet balance
     public WalletDto getWalletBalance(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return DtoConverter.toWalletDto(user.getWallet());
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return DtoConverter.toWalletDto(user.getWallet(), user.getPointsAccount());
     }
 
-    // Get points balance
     public PointsAccountDto getPointsBalance(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException ("User not found"));
         return DtoConverter.toPointsAccountDto(user.getPointsAccount());
     }
 }

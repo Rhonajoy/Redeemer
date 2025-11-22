@@ -28,7 +28,6 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType type;
     private LocalDateTime createdAt;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

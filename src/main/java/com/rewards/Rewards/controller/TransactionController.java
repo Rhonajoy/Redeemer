@@ -1,5 +1,6 @@
 package com.rewards.Rewards.controller;
 
+import com.rewards.Rewards.config.ApiConfig;
 import com.rewards.Rewards.dto.RedeemPointsRequestDto;
 import com.rewards.Rewards.dto.TransactionDto;
 import com.rewards.Rewards.dto.TransactionRequestDto;
@@ -8,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/transactions")
+@RequestMapping(TransactionController.PATH)
 public class TransactionController {
     private final TransactionService transactionService;
-
+    public static final String PATH = ApiConfig.BASE_API_PATH + "transactions";
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
@@ -21,11 +22,9 @@ public class TransactionController {
             @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
             @RequestBody TransactionRequestDto request) {
 
-        // Optional header sets transactionReference
         if (idempotencyKey != null && !idempotencyKey.isBlank()) {
             request.setTransactionReference(idempotencyKey);
         }
-
         TransactionDto transaction = transactionService.createTransaction(request);
         return ResponseEntity.ok(transaction);
     }

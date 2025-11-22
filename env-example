@@ -1,0 +1,24 @@
+
+# Spring Profile
+SPRING_PROFILES_ACTIVE=dev
+
+# PostgreSQL Database
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=rewards_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+
+# Flyway Configuration
+FLYWAY_LOCATIONS=classpath:db/migration
+FLYWAY_BASELINE_ON_MIGRATE=true
+
+# Redis Configuration
+REDIS_HOST=redis          s
+REDIS_PORT=6379
+
+# Kafka Configuration
+KAFKA_BROKER=kafka:9092
+
+# Application Server
+SERVER_PORT=8080

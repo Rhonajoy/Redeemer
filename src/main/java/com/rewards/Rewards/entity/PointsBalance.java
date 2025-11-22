@@ -14,9 +14,7 @@ public class PointsBalance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Long availablePoints;
-
     @OneToOne
     @JoinColumn(name = "points_account_id")
     private PointsAccount pointsAccount;
