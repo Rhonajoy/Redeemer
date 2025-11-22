@@ -1,4 +1,4 @@
-#  Ridima Points (Spring Boot)
+#  Ridima Points 
 
 This is the backend  that allows users to earn and redeem
 points. This system assign points to users based on the CREDIT transactions made to their wallet and  allow them to redeeem points for money to be credited to their wallet.
@@ -10,10 +10,12 @@ points. This system assign points to users based on the CREDIT transactions made
 - **Spring Boot 3**
 - **Kafka**
 - **Redis**
-- **PostgreSQL** (Cloud-hosted in production, Docker in local development)
+- **PostgreSQL** 
+- **Zookeeper**
 - **Maven** (build tool)
 - **Docker & Docker Compose** (containerization & orchestration)
-- **Railway** (deployment platform)
+- **Flyway** (Db migrations)
+- **Postman** ( for API testing)
 
 ---
 
@@ -35,20 +37,38 @@ points. This system assign points to users based on the CREDIT transactions made
 git clone https://github.com/Rhonajoy/organic-certification-backend.git
 cd organic-certification-backend
 
-### 2. Build the jar
-```bash
-./mvnw clean package -DskipTests
-```
-##  Run with Docker
+### 2. Local Setup
+Create a .env file in the project root
+Ensure the following services are running locally:
+PostgreSQL
+Redis
+Kafka + Zookeeper
+Create the database if it doesn’t exist:
 
+### 3.Build and Run the App
 ```bash
-    docker compose up --build
+  mvn clean package -DskipTests
+  mvn spring-boot:run
 ```
+The app will be available at http://localhost:8080
+##  Run with Docker
+### 1.Build and Run the App
+```bash
+   docker compose up --build -d
+```
+### 2.Verify Services
+```bash
+   docker compose ps
+```
+### 3.Test the Application
+Access the API endpoints using Postman or browser:
+GET http://localhost:8080/api/v1
 
 ##  API Documentation
 http://localhost:8080/swagger-ui.html
 
-https://organic-certification-backend-production.up.railway.app/swagger-ui/index.html
+##  API Metrics
+http://localhost:8080/actuator/metrics
 
 ## License
 
