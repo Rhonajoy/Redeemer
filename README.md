@@ -34,8 +34,8 @@ points. This system assign points to users based on the CREDIT transactions made
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Rhonajoy/organic-certification-backend.git
-cd organic-certification-backend
+git clone https://github.com/Rhonajoy/Redeemer.git
+cd Redeemer
 
 ### 2. Local Setup
 Create a .env file in the project root
@@ -73,5 +73,6 @@ http://localhost:8080/actuator/metrics
 ## License
 
 This project is licensed under the MIT License – free to use and modify.
+
 
 
